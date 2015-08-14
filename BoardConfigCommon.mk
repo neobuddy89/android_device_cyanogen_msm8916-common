@@ -145,7 +145,7 @@ PROTOBUF_SUPPORTED := true
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
-    device/cyanogen/msm8916-common/sepolicy
+    $(VENDOR_PATH)/sepolicy
 
 BOARD_SEPOLICY_UNION += \
     bluetooth_loader.te \
