@@ -187,5 +187,9 @@ WIFI_DRIVER_FW_PATH_AP := "ap"
 WIFI_DRIVER_FW_PATH_STA := "sta"
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 
+# Quickboot
+PRODUCT_COPY_FILES += \
+    $(VENDOR_PATH)/prebuilt/QuickBoot.apk:system/priv-app/QuickBoot/QuickBoot.apk
+
 # inherit from the proprietary version
 -include vendor/cyanogen/msm8916-common/BoardConfigVendor.mk
