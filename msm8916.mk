@@ -133,6 +133,10 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
     ueventd.qcom.rc
 
+# QCOM
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.data.qmi.adb_logmask=0
+
 # Recovery
 PRODUCT_PACKAGES += \
     librecovery_updater_cm
