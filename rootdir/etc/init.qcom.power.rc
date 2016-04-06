@@ -36,6 +36,7 @@ on enable-low-power
     write /sys/module/cpu_boost/parameters/input_boost_freq 800000
     write /sys/module/cpu_boost/parameters/input_boost_ms 500
     write /dev/cpuctl/apps/cpu.notify_on_migrate 0
+    write /sys/module/state_notifier/parameters/enabled 1
 
     rm /data/system/perfd/default_values
     start perfd
