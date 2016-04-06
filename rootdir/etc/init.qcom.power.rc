@@ -15,9 +15,7 @@ on enable-low-power
     write /sys/module/msm_thermal/core_control/enabled 0
 
     # enable governor
-    write /sys/devices/system/cpu/cpu0/online 1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 800000
     # enable thermal core_control now
     write /sys/module/msm_thermal/core_control/enabled 1
 
@@ -26,7 +24,7 @@ on enable-low-power
     write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 30000
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 998400
     write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0
-    write /sys/devices/system/cpu/cpufreq/interactive/target_loads "1 800000:85 998400:90 1094400:80"
+    write /sys/devices/system/cpu/cpufreq/interactive/target_loads "10 800000:85 998400:90 1094400:80"
     write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 50000
     write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 50000
 
@@ -34,6 +32,10 @@ on enable-low-power
     write /sys/devices/system/cpu/cpu1/online 1
     write /sys/devices/system/cpu/cpu2/online 1
     write /sys/devices/system/cpu/cpu3/online 1
+
+    write /sys/module/cpu_boost/parameters/input_boost_freq 800000
+    write /sys/module/cpu_boost/parameters/input_boost_ms 500
+    write /dev/cpuctl/apps/cpu.notify_on_migrate 0
 
     rm /data/system/perfd/default_values
     start perfd
