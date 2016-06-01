@@ -2,6 +2,7 @@ on enable-low-power
     # HMP scheduler load tracking settings
     write /proc/sys/kernel/sched_window_stats_policy 3
     write /proc/sys/kernel/sched_ravg_hist_size 3
+    write /proc/sys/kernel/sched_ravg_window 20000000
 
     # HMP Task packing settings for 8916
     write /proc/sys/kernel/sched_small_task 20
@@ -11,29 +12,58 @@ on enable-low-power
     # disable thermal core_control to update interactive governor settings
     write /sys/module/msm_thermal/core_control/enabled 0
 
-    # enable governor
-    write /sys/devices/system/cpu/cpu0/online 1
+    # Configure interactive governor
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 800000
-    # enable thermal core_control now
-    write /sys/module/msm_thermal/core_control/enabled 1
-
-    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "25000 1094400:50000"
-    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 30000
+    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "19000 1094400:39000"
+    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 85
+    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 998400
     write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0
     write /sys/devices/system/cpu/cpufreq/interactive/target_loads "1 800000:85 998400:90 1094400:80"
-    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 50000
-    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 50000
+    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
+    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 40000
+    write /sys/devices/system/cpu/cpufreq/interactive/use_sched_load 1
+    write /sys/devices/system/cpu/cpufreq/interactive/use_migration_notif 1
+
+    # Configure impulse governor for msm8916
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "impulse"
+    write /sys/devices/system/cpu/cpufreq/impulse/above_hispeed_delay "19000 1094400:39000"
+    write /sys/devices/system/cpu/cpufreq/impulse/align_windows 1
+    write /sys/devices/system/cpu/cpufreq/impulse/go_hispeed_load 90
+    write /sys/devices/system/cpu/cpufreq/impulse/hispeed_freq 998400
+    write /sys/devices/system/cpu/cpufreq/impulse/io_is_busy 0
+    write /sys/devices/system/cpu/cpufreq/impulse/max_freq_hysteresis 40000
+    write /sys/devices/system/cpu/cpufreq/impulse/min_sample_time 40000
+    write /sys/devices/system/cpu/cpufreq/impulse/powersave_bias 1
+    write /sys/devices/system/cpu/cpufreq/impulse/target_loads "40 800000:85 998400:90 1094400:80"
+    write /sys/devices/system/cpu/cpufreq/impulse/timer_rate 20000
+    write /sys/devices/system/cpu/cpufreq/impulse/timer_slack 20000
+    write /sys/devices/system/cpu/cpufreq/impulse/use_migration_notif 1
+    write /sys/devices/system/cpu/cpufreq/impulse/use_sched_load 1
+
+    # enable thermal core_control now
+    write /sys/module/msm_thermal/core_control/enabled 1
 
     # bring all CPUs online
     write /sys/devices/system/cpu/cpu1/online 1
     write /sys/devices/system/cpu/cpu2/online 1
     write /sys/devices/system/cpu/cpu3/online 1
 
+    write /sys/module/cpu_boost/parameters/input_boost_freq 800000
+    write /sys/module/cpu_boost/parameters/input_boost_ms 500
+    write /dev/cpuctl/apps/cpu.notify_on_migrate 0
+    write /sys/module/state_notifier/parameters/enabled 1
+    write /sys/kernel/state_helper/enabled 1
+    write /sys/kernel/state_helper/max_cpus_susp 2
+    write /sys/kernel/state_helper/batt_level_cri 10
+    write /sys/kernel/state_helper/batt_level_eco 15
+
     # Enable low power modes
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
+
+    # Enable sched guided freq control
+    write /proc/sys/kernel/sched_freq_inc_notify 50000
+    write /proc/sys/kernel/sched_freq_dec_notify 50000
 
     # Update foreground and background cpusets
     write /dev/cpuset/foreground/cpus 0-3
